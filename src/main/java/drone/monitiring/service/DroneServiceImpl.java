@@ -1,39 +1,57 @@
 package drone.monitiring.service;
 
-import drone.monitiring.entities.Drone;
-import drone.monitiring.entities.Medication;
-import drone.monitiring.models.DroneModel;
-import drone.monitiring.models.MedicationModel;
+import org.slf4j.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import drone.monitiring.entities.*;
+import drone.monitiring.models.*;
+import drone.monitiring.repo.*;
+
+@Service
+@Transactional(readOnly = true)
 public class DroneServiceImpl implements DroneService {
+	
+	private static Logger LOG = LoggerFactory.getLogger(DroneServiceImpl.class);
+	@Autowired
+	private DroneRepository droneRepo;
+	@Autowired
+	private MedicationRepository medicationRepo;
+	@Autowired
+	private DeliveryRepository deliveryRepo;
 
 	@Override
-	public Drone registerDrone(DroneModel drone) {
-		// TODO Auto-generated method stub
-		return null;
+	@Transactional
+	public Drone registerDrone(DroneModel dto) {
+		
+		Drone drone = new Drone(dto.serialNumber, dto.model, dto.weigthLimit, dto.batteryCapacity, dto.state);
+		droneRepo.save(drone);
+		return drone;
 	}
 
 	@Override
+	@Transactional
 	public boolean loadDrone(MedicationModel[] medications) {
-		// TODO Auto-generated method stub
+		
 		return false;
 	}
 
 	@Override
-	public Medication[] getLoadedMedications(long sroneId) {
-		// TODO Auto-generated method stub
+	public Medication[] getLoadedMedications(long droneId) {
+		
 		return null;
 	}
 
 	@Override
 	public Drone[] getAvailableDrones() {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
 	@Override
 	public int getBatteryLevel(long droneId) {
-		// TODO Auto-generated method stub
+		
 		return 0;
 	}
 

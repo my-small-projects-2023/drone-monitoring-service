@@ -1,18 +1,22 @@
 package drone.monitiring.models;
 
+import jakarta.validation.constraints.*;
+
 public class DroneModel {
 	
 	private long id;
-	//max 100 char
-	private String serialNumber;
-	private Model model;
-	//max 500gr
-	private int weigthLimit;
-	//percentage
-	private int batteryCapacity;
-	private State state;
+	@NotEmpty(message = "serial number cannot be empty") @Size(max = 100)
+	public String serialNumber;
+	@Pattern(regexp = "Lightweight|Middleweight|Cruiserweight|Heavyweight", message="model can be either: Lightweight, Middleweight, Cruiserweight, Heavyweight")
+	public String model;
+	@Min(0) @Max(500)
+	public int weigthLimit;
+	@Min(0) @Max(100)
+	public int batteryCapacity;
+	@Pattern(regexp="IDLE|LOADING|LOADED|DELIVERING|DELIVERED|RETURNING", message="model can be either: IDLE, LOADING, LOADED, DELIVERING, DELIVERED, RETURNING")
+	public String state;
 
-	public DroneModel(long id, String serialNumber, Model model, int weigthLimit, int batteryCapacity, State state) {
+	public DroneModel(long id, String serialNumber, String model, int weigthLimit, int batteryCapacity, String state) {
 		super();
 		this.id = id;
 		this.serialNumber = serialNumber;
@@ -24,46 +28,6 @@ public class DroneModel {
 	
 	public DroneModel() {
 		
-	}
-
-	public String getSerialNumber() {
-		return serialNumber;
-	}
-
-	public void setSerialNumber(String serialNumber) {
-		this.serialNumber = serialNumber;
-	}
-
-	public Model getModel() {
-		return model;
-	}
-
-	public void setModel(Model model) {
-		this.model = model;
-	}
-
-	public int getWeigthLimit() {
-		return weigthLimit;
-	}
-
-	public void setWeigthLimit(int weigthLimit) {
-		this.weigthLimit = weigthLimit;
-	}
-
-	public int getBatteryCapacity() {
-		return batteryCapacity;
-	}
-
-	public void setBatteryCapacity(int batteryCapacity) {
-		this.batteryCapacity = batteryCapacity;
-	}
-
-	public State getState() {
-		return state;
-	}
-
-	public void setState(State state) {
-		this.state = state;
 	}
 
 	public long getId() {

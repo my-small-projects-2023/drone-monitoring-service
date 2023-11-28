@@ -1,15 +1,21 @@
 package drone.monitiring.models;
 
 import java.util.Arrays;
+import java.util.List;
+
+import jakarta.validation.constraints.*;
 
 public class DeliveryModel {
 	
 	private long id;
-	private int medicationsWeight;
-	private long droneId;
-	private long[] medicationsId;
+	@Min(0) @Max(500)
+	public int medicationsWeight;
+	@Min(0)
+	public long droneId;
+	@NotEmpty(message = "medications list can not be empty")
+	public List<Long> medicationsId;
 
-	public DeliveryModel(long id, int medicationsWeight, long droneId, long[] medicationsId) {
+	public DeliveryModel(long id, int medicationsWeight, long droneId, List<Long> medicationsId) {
 		super();
 		this.id = id;
 		this.medicationsWeight = medicationsWeight;
@@ -21,29 +27,6 @@ public class DeliveryModel {
 		
 	}
 
-	public int getMedicationsWeight() {
-		return medicationsWeight;
-	}
-
-	public void setMedicationsWeight(int medicationsWeight) {
-		this.medicationsWeight = medicationsWeight;
-	}
-
-	public long getDroneId() {
-		return droneId;
-	}
-
-	public void setDroneId(long droneId) {
-		this.droneId = droneId;
-	}
-
-	public long[] getMedicationsId() {
-		return medicationsId;
-	}
-
-	public void setMedicationsId(long[] medicationsId) {
-		this.medicationsId = medicationsId;
-	}
 
 	public long getId() {
 		return id;
@@ -52,7 +35,7 @@ public class DeliveryModel {
 	@Override
 	public String toString() {
 		return "DeliveryModel [id=" + id + ", medicationsWeight=" + medicationsWeight + ", droneId=" + droneId
-				+ ", medicationsId=" + Arrays.toString(medicationsId) + "]";
+				+ ", medicationsId=" + Arrays.toString(medicationsId.toArray()) + "]";
 	}
 	
 	

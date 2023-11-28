@@ -7,11 +7,11 @@ import drone.monitiring.models.MedicationModel;
 
 public interface DroneService {
 
-	Drone registerDrone(DroneModel drone);
+	Drone registerDrone(DroneModel dto);
 	
 	boolean loadDrone(MedicationModel[] medications);
 	
-	Medication[] getLoadedMedications(long sroneId);
+	Medication[] getLoadedMedications(long droneId);
 	
 	Drone[] getAvailableDrones();
 	

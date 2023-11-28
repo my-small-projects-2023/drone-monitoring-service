@@ -1,14 +1,18 @@
 package drone.monitiring.models;
 
+import jakarta.validation.constraints.*;
+
 public class MedicationModel {
 	
 	private long id;
-	//allowed only letters, numbers, ‘-‘, ‘_’
-	private String name;
-	private int weight;
-	//allowed only upper case letters, underscore and numbers
-	private String code;
-	private String imageUrl;
+	@Pattern(regexp = "^[a-zA-Z0-9_-]*$", message = "allowed only letters, numbers, ‘-‘, ‘_’")
+	public String name;
+	@Min(0) @Max(500)
+	public int weight;
+	@Pattern(regexp = "^[A-Z0-9_]*$", message = "allowed only upper case letters, underscore and numbers")
+	public String code;
+	@Pattern(regexp = ".*\\\\.(png|jpe?g|gif|bmp|webp)$", message = "string should be in image url format: https://example.com/image.jpg")
+	public String imageUrl;
 
 	public MedicationModel(long id, String name, int weight, String code, String imageUrl) {
 		super();
@@ -21,38 +25,6 @@ public class MedicationModel {
 	
 	public MedicationModel() {
 		
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public int getWeight() {
-		return weight;
-	}
-
-	public void setWeight(int weight) {
-		this.weight = weight;
-	}
-
-	public String getCode() {
-		return code;
-	}
-
-	public void setCode(String code) {
-		this.code = code;
-	}
-
-	public String getImageUrl() {
-		return imageUrl;
-	}
-
-	public void setImageUrl(String imageUrl) {
-		this.imageUrl = imageUrl;
 	}
 
 	public long getId() {
