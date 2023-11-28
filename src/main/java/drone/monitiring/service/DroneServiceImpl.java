@@ -1,5 +1,7 @@
 package drone.monitiring.service;
 
+import java.util.List;
+
 import org.slf4j.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,27 +34,43 @@ public class DroneServiceImpl implements DroneService {
 
 	@Override
 	@Transactional
-	public boolean loadDrone(MedicationModel[] medications) {
+	public boolean loadDrone(List<MedicationModel> medications) {
+		List<Medication> medicationsList = medicationRepo.findAllById(medications.stream().map(e -> e.getId()).toList());
+		if(medicationsList.size() == 0) {
+			return false;
+		}
+		int medicationsWeigth = medicationsList.stream().mapToInt(e -> e.getWeight()).sum();
 		
-		return false;
+		Drone drone = droneRepo.findAvailableDrone(medicationsWeigth);
+		if(drone == null) {
+			return false;
+		}
+
+		deliveryRepo.save(new Delivery(medicationsWeigth, drone, medicationsList));
+		return true;
 	}
 
 	@Override
-	public Medication[] getLoadedMedications(long droneId) {
-		
-		return null;
+	public List<Medication> getLoadedMedications(long droneId) {
+		Delivery delivery = deliveryRepo.findLastDeliveryByDroneId(droneId);
+		return delivery.getMedications();
 	}
 
 	@Override
 	public Drone[] getAvailableDrones() {
 		
-		return null;
+		return droneRepo.findAvailableDrones();
 	}
 
 	@Override
 	public int getBatteryLevel(long droneId) {
 		
-		return 0;
+		Drone drone = droneRepo.findById(droneId).orElse(null);
+		if(drone == null) {
+			return -1;
+		}
+		//TODO
+		return drone.getBatteryCapacity();
 	}
 
 	

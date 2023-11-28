@@ -18,13 +18,13 @@ public class Delivery {
 	private Drone drone;
 	@ManyToOne
 	@JoinColumn(name = "medication_id")
-	private List<Medication> medicationsId;
+	private List<Medication> medications;
 
-	public Delivery(int medicationsWeight, Drone drone, List<Medication> medicationsId) {
+	public Delivery(int medicationsWeight, Drone drone, List<Medication> medications) {
 		super();
 		this.medicationsWeight = medicationsWeight;
 		this.drone = drone;
-		this.medicationsId = medicationsId;
+		this.medications = medications;
 	}
 	
 	public Delivery() {
@@ -47,12 +47,12 @@ public class Delivery {
 		this.drone = drone;
 	}
 
-	public List<Medication> getMedicationsId() {
-		return medicationsId;
+	public List<Medication> getMedications() {
+		return medications;
 	}
 
-	public void setMedicationsId(List<Medication> medicationsId) {
-		this.medicationsId = medicationsId;
+	public void setMedications(List<Medication> medications) {
+		this.medications = medications;
 	}
 
 	public long getId() {
@@ -62,7 +62,7 @@ public class Delivery {
 	@Override
 	public String toString() {
 		return "Delivery [id=" + id + ", medicationsWeight=" + medicationsWeight + ", drone=" + drone
-				+ ", medicationsId=" + Arrays.toString(medicationsId.toArray()) + "]";
+				+ ", medicationsId=" + Arrays.toString(medications.toArray()) + "]";
 	}
 
 

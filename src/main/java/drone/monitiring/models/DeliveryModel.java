@@ -13,14 +13,14 @@ public class DeliveryModel {
 	@Min(0)
 	public long droneId;
 	@NotEmpty(message = "medications list can not be empty")
-	public List<Long> medicationsId;
+	public List<Long> medications;
 
-	public DeliveryModel(long id, int medicationsWeight, long droneId, List<Long> medicationsId) {
+	public DeliveryModel(long id, int medicationsWeight, long droneId, List<Long> medications) {
 		super();
 		this.id = id;
 		this.medicationsWeight = medicationsWeight;
 		this.droneId = droneId;
-		this.medicationsId = medicationsId;
+		this.medications = medications;
 	} 
 	
 	public DeliveryModel() {
@@ -35,7 +35,7 @@ public class DeliveryModel {
 	@Override
 	public String toString() {
 		return "DeliveryModel [id=" + id + ", medicationsWeight=" + medicationsWeight + ", droneId=" + droneId
-				+ ", medicationsId=" + Arrays.toString(medicationsId.toArray()) + "]";
+				+ ", medicationsId=" + Arrays.toString(medications.toArray()) + "]";
 	}
 	
 	

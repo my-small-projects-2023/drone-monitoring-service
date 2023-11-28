@@ -1,5 +1,7 @@
 package drone.monitiring.service;
 
+import java.util.List;
+
 import drone.monitiring.entities.Drone;
 import drone.monitiring.entities.Medication;
 import drone.monitiring.models.DroneModel;
@@ -9,9 +11,9 @@ public interface DroneService {
 
 	Drone registerDrone(DroneModel dto);
 	
-	boolean loadDrone(MedicationModel[] medications);
+	boolean loadDrone(List<MedicationModel> medications);
 	
-	Medication[] getLoadedMedications(long droneId);
+	List<Medication> getLoadedMedications(long droneId);
 	
 	Drone[] getAvailableDrones();
 	
