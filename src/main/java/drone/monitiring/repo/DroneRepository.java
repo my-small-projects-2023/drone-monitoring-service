@@ -8,10 +8,10 @@ import drone.monitiring.entities.Drone;
 public interface DroneRepository extends JpaRepository<Drone, Long>   {
 
 	
-	@Query() //TODO
-	Drone[] findAvailableDrones();
-
-	@Query() //TODO
-	Drone findAvailableDrone(int medicationsWeigth);
+//	@Query() //TODO
+//	Drone[] findAvailableDrones();
+//
+//	@Query() //TODO
+//	Drone findAvailableDrone(int medicationsWeigth);
 
 }

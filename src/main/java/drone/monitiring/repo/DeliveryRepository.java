@@ -7,7 +7,7 @@ import drone.monitiring.entities.Delivery;
 
 public interface DeliveryRepository extends JpaRepository<Delivery, Long> {
 
-	@Query() //TODO
-	Delivery findLastDeliveryByDroneId(long droneId);
+//	@Query() //TODO
+//	Delivery findLastDeliveryByDroneId(long droneId);
 
 }

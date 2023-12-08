@@ -1,6 +1,6 @@
 package drone.monitiring.entities;
 
-import java.util.Arrays;
+import java.util.*;
 import java.util.List;
 
 import jakarta.persistence.*;
@@ -16,15 +16,15 @@ public class Delivery {
 	@ManyToOne
 	@JoinColumn(name = "drone_id")
 	private Drone drone;
-	@ManyToOne
-	@JoinColumn(name = "medication_id")
-	private List<Medication> medications;
+	
+	@OneToMany(mappedBy = "delivery", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<DeliveryItem> items = new ArrayList<>();
 
-	public Delivery(int medicationsWeight, Drone drone, List<Medication> medications) {
+	public Delivery(int medicationsWeight, Drone drone, List<DeliveryItem> items) {
 		super();
 		this.medicationsWeight = medicationsWeight;
 		this.drone = drone;
-		this.medications = medications;
+		this.items = items;
 	}
 	
 	public Delivery() {
@@ -47,12 +47,12 @@ public class Delivery {
 		this.drone = drone;
 	}
 
-	public List<Medication> getMedications() {
-		return medications;
+	public List<DeliveryItem>  getMedications() {
+		return items;
 	}
 
-	public void setMedications(List<Medication> medications) {
-		this.medications = medications;
+	public void setMedications(List<DeliveryItem>  items) {
+		this.items = items;
 	}
 
 	public long getId() {
@@ -62,7 +62,7 @@ public class Delivery {
 	@Override
 	public String toString() {
 		return "Delivery [id=" + id + ", medicationsWeight=" + medicationsWeight + ", drone=" + drone
-				+ ", medicationsId=" + Arrays.toString(medications.toArray()) + "]";
+				+ ", medicationsId=" + Arrays.toString(items.toArray()) + "]";
 	}
 
 

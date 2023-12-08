@@ -41,25 +41,30 @@ public class DroneServiceImpl implements DroneService {
 		}
 		int medicationsWeigth = medicationsList.stream().mapToInt(e -> e.getWeight()).sum();
 		
-		Drone drone = droneRepo.findAvailableDrone(medicationsWeigth);
-		if(drone == null) {
-			return false;
-		}
-
-		deliveryRepo.save(new Delivery(medicationsWeigth, drone, medicationsList));
+		//TODO
+//		Drone drone = droneRepo.findAvailableDrone(medicationsWeigth);
+//		if(drone == null) {
+//			return false;
+//		}
+//
+//		deliveryRepo.save(new Delivery(medicationsWeigth, drone, medicationsList));
 		return true;
 	}
 
 	@Override
 	public List<Medication> getLoadedMedications(long droneId) {
-		Delivery delivery = deliveryRepo.findLastDeliveryByDroneId(droneId);
-		return delivery.getMedications();
+		//TODO
+//		Delivery delivery = deliveryRepo.findLastDeliveryByDroneId(droneId);
+//		return delivery.getMedications();
+		return null;
 	}
 
 	@Override
 	public Drone[] getAvailableDrones() {
 		
-		return droneRepo.findAvailableDrones();
+		//TODO
+//		return droneRepo.findAvailableDrones();
+		return null;
 	}
 
 	@Override
