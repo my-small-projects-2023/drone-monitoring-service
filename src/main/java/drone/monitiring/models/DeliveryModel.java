@@ -1,7 +1,6 @@
 package drone.monitiring.models;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 import jakarta.validation.constraints.*;
 
@@ -13,12 +12,12 @@ public class DeliveryModel {
 	@Min(0)
 	public long droneId;
 	@NotEmpty(message = "medications list can not be empty")
-	public List<Long> medications;
+	public Map<Long, Integer> medications;
 
-	public DeliveryModel(long id, int medicationsWeight, long droneId, List<Long> medications) {
+	public DeliveryModel(long id, long droneId, Map<Long, Integer> medications) {
 		super();
 		this.id = id;
-		this.medicationsWeight = medicationsWeight;
+		//this.medicationsWeight = medicationsWeight;
 		this.droneId = droneId;
 		this.medications = medications;
 	} 
@@ -34,8 +33,10 @@ public class DeliveryModel {
 
 	@Override
 	public String toString() {
-		return "DeliveryModel [id=" + id + ", medicationsWeight=" + medicationsWeight + ", droneId=" + droneId
-				+ ", medicationsId=" + Arrays.toString(medications.toArray()) + "]";
+		return "DeliveryModel [id=" + id + ", droneId=" + droneId
+				+ "]";
+		//TODO map to string
+		//", medicationsId=" + Arrays.toString(medications.toArray()) + 
 	}
 	
 	

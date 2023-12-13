@@ -11,10 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import drone.monitiring.entities.Delivery;
-import drone.monitiring.entities.Drone;
-import drone.monitiring.entities.Medication;
-import drone.monitiring.repo.*;
+import drone.monitiring.models.*;
+import drone.monitiring.service.ModelService;
 import jakarta.annotation.PostConstruct;
 
 @Component
@@ -26,11 +24,7 @@ public class RandomDBCreation implements Serializable {
 	String ddlAutoProp;
 	
 	@Autowired
-	private DroneRepository droneRepo;
-	@Autowired
-	private MedicationRepository medicationRepo;
-	@Autowired
-	private DeliveryRepository deliveryRepo;
+	private ModelService service;
 	
 	
 	// drone
@@ -49,6 +43,8 @@ public class RandomDBCreation implements Serializable {
 	private static final int MAX_WEIGHT = 220;
 	private static final int MIN_CODE = 1000;
 	private static final int MAX_CODE = 9999;
+	private static final int MIN_MEDICATIONS_AMOUNT = 1;
+	private static final int MAX_MEDICATIONS_AMOUNT = 2;
 	
 	@PostConstruct
 	void createDB() {
@@ -63,25 +59,27 @@ public class RandomDBCreation implements Serializable {
 	}
 
 	private void addDeliveries() {
-		IntStream.range(0, DRONES_AMOUNT - 1).forEach(e -> {
-			Drone drone = droneRepo.findById((long) e).orElse(null);
-			Medication medication = medicationRepo.findById((long)e).orElse(null);
-			//TODO
+		IntStream.range(1, DRONES_AMOUNT).forEach(e -> {
+			Map<Long, Integer> medications = new HashMap<>();
+			medications.put((long)getRandomNumber(1, MEDICATION_NAMES.length), getRandomNumber(MIN_MEDICATIONS_AMOUNT, MAX_MEDICATIONS_AMOUNT));
+			medications.put((long)getRandomNumber(1, MEDICATION_NAMES.length), getRandomNumber(MIN_MEDICATIONS_AMOUNT, MAX_MEDICATIONS_AMOUNT));
+			medications.put((long)getRandomNumber(1, MEDICATION_NAMES.length), getRandomNumber(MIN_MEDICATIONS_AMOUNT, MAX_MEDICATIONS_AMOUNT));
+			service.addDelivery(new DeliveryModel((long)0, (long)e, medications));
 		});
 		
 	}
 
-
 	private void addMedications() {
 		Stream.of(MEDICATION_NAMES).forEach(e -> {
-			medicationRepo.save(new Medication(e, getRandomNumber(MIN_WEIGHT, MAX_WEIGHT),
+			service.addMedication(new MedicationModel(0, e, getRandomNumber(MIN_WEIGHT, MAX_WEIGHT),
 					"1" + getRandomNumber(MIN_CODE, MAX_CODE),"http://..."));
 		});
+		
 	}
 
 	private void addDrons() {
 		IntStream.range(0, DRONES_AMOUNT).forEach(e -> {
-			droneRepo.save(new Drone("SEar" + 1, DRONE_MODEL[getRandomNumber(0, DRONE_MODEL.length - 1)],
+			service.addDrone(new DroneModel(0, "SEar" + 1, DRONE_MODEL[getRandomNumber(0, DRONE_MODEL.length - 1)],
 					getRandomNumber(MIN_WEIGHT_LIMIT, MAX_WEIGHT_LIMIT), getRandomNumber(MIN_BATTERY_CAPACITY, MAX_BATTERY_CAPACITY),
 					DRONE_STATE[getRandomNumber(0, DRONE_STATE.length - 1)]));
 		});
