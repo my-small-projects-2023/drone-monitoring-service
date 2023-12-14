@@ -1,6 +1,5 @@
 package drone.monitiring.controller;
 
-import java.util.List;
 import java.util.Map;
 
 import org.slf4j.*;
@@ -40,8 +39,8 @@ public class DronesParkController {
 	}
 	
 	@GetMapping("/medications/loaded/")
-	public List<Medication> getLoadedMedications(@RequestParam long droneId) {
-		LOG.info("*park-controller* request to get loadet medications from drone: {droneId}");
+	public Medication[] getLoadedMedications(@RequestParam long droneId) {
+		LOG.info("*park-controller* request to get loadet medications from drone: {}", droneId);
 		
 		return service.getLoadedMedications(droneId);
 	}

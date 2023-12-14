@@ -19,7 +19,7 @@ public class DronesParkServiceImpl implements DronesParkService {
 	private static final int BATATTERY_CAPACITY = 100;
 	private static final int MIN_BATTERY_CAPACITY = 25;
 	
-	private static Map<Long, List<Medication>> loadedMedications = new HashMap<>();
+	//private static Map<Long, List<Medication>> loadedMedications = new HashMap<>();
 	@Autowired
 	private DroneRepository droneRepo;
 	@Autowired
@@ -65,7 +65,7 @@ public class DronesParkServiceImpl implements DronesParkService {
 		drone.setState(State.LOADING.name());
 		droneRepo.save(drone);
 		//TOFIX
-		loadedMedications.put(drone.getId(), medicationList);
+		//loadedMedications.put(drone.getId(), medicationList);
 		
 		
 		List<DeliveryItem> deliveryItems = new ArrayList<>();
@@ -84,16 +84,16 @@ public class DronesParkServiceImpl implements DronesParkService {
 	
 
 	@Override
-	public List<Medication> getLoadedMedications(long droneId) {
-		List<Medication> medications= loadedMedications.get(droneId);
-		LOG.debug("*park-service* droan: {}, loadedMedications: {}", droneId, medications);
+	public Medication[] getLoadedMedications(long droneId) {
+		Medication[] medications = medicationRepo.getLastDelivery(droneId);
+		LOG.debug("*park-service* droan: {}, loadedMedications: {}", droneId, Arrays.toString(medications));
 		return medications;
 	}
 
 	@Override
 	public Drone[] getAvailableDrones() {
 		Drone[] drones = droneRepo.findAvailableDrones(MIN_BATTERY_CAPACITY, State.IDLE.name());
-		LOG.debug("*park-service* found available drones: {}", drones.toString());
+		LOG.debug("*park-service* found available drones: {}", Arrays.toString(drones));
 		return drones;
 	}
 
@@ -107,6 +107,14 @@ public class DronesParkServiceImpl implements DronesParkService {
 		}
 		LOG.debug("*park-service* found drone: {}", drone.toString());
 		return drone.getBatteryCapacity();
+	}
+
+	@Override
+	public Medication addMedication(MedicationModel dto) {
+		Medication medication = medicationRepo
+				.save(new Medication(dto.name, dto.weight, dto.code, dto.imageUrl));
+		LOG.debug("*park-service* new medication was added: {}", medication.toString());
+		return medication;
 	}
 
 	

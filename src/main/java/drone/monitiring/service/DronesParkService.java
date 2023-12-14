@@ -1,6 +1,5 @@
 package drone.monitiring.service;
 
-import java.util.List;
 import java.util.Map;
 
 import drone.monitiring.entities.*;
@@ -12,10 +11,12 @@ public interface DronesParkService {
 	
 	boolean loadDrone(Map<Long, Integer> medications);
 	
-	List<Medication> getLoadedMedications(long droneId);
+	Medication[] getLoadedMedications(long droneId);
 	
 	Drone[] getAvailableDrones();
 	
 	int getBatteryLevel(long droneId);
+	
+	Medication addMedication(MedicationModel dto);
 	
 }

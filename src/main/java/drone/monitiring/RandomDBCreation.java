@@ -11,8 +11,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import drone.monitiring.entities.Drone;
 import drone.monitiring.models.*;
-import drone.monitiring.service.ModelService;
+import drone.monitiring.repo.DroneRepository;
+import drone.monitiring.service.DronesParkService;
 import jakarta.annotation.PostConstruct;
 
 @Component
@@ -24,12 +26,14 @@ public class RandomDBCreation implements Serializable {
 	String ddlAutoProp;
 	
 	@Autowired
-	private ModelService service;
+	private DronesParkService service;
+	@Autowired
+	private DroneRepository droneRepo;
 	
 	private static final int DRONES_AMOUNT = 10;
 	private static final int MIN_WEIGHT_LIMIT = 260;
 	private static final int MAX_WEIGHT_LIMIT = 500;
-
+	private static final String[] STATE = {"IDLE", "LOADING", "LOADED", "DELIVERING", "DELIVERED", "RETURNING"};
 	private static final String[] MEDICATION_NAMES = {"Tranquilizra", "Cardiofluxin", "Neurocalmex", 
 			"Dermaviva", "SinuRelief", "OsteoFlexidol", "PulmoEase", "DigestiCare", "OptiVisionix", 
 			"ImmunoGuardia"};
@@ -58,7 +62,7 @@ public class RandomDBCreation implements Serializable {
 			medications.put((long)getRandomNumber(1, MEDICATION_NAMES.length), getRandomNumber(MIN_MEDICATIONS_AMOUNT, MAX_MEDICATIONS_AMOUNT));
 			medications.put((long)getRandomNumber(1, MEDICATION_NAMES.length), getRandomNumber(MIN_MEDICATIONS_AMOUNT, MAX_MEDICATIONS_AMOUNT));
 			medications.put((long)getRandomNumber(1, MEDICATION_NAMES.length), getRandomNumber(MIN_MEDICATIONS_AMOUNT, MAX_MEDICATIONS_AMOUNT));
-			service.addDelivery(new DeliveryModel((long)0, (long)e, medications));
+			service.loadDrone(medications);
 		});
 		
 	}
@@ -73,8 +77,10 @@ public class RandomDBCreation implements Serializable {
 
 	private void addDrons() {
 		IntStream.range(0, DRONES_AMOUNT).forEach(e -> {
-			service.addDrone(new DroneModel(0, "SEar" + 1,
+			Drone drone = service.registerDrone(new DroneModel(0, "SEar" + 1,
 					getRandomNumber(MIN_WEIGHT_LIMIT, MAX_WEIGHT_LIMIT)));
+			drone.setState(STATE[getRandomNumber(0, STATE.length - 1)]);
+			droneRepo.save(drone);
 		});
 		
 	}
