@@ -26,16 +26,10 @@ public class RandomDBCreation implements Serializable {
 	@Autowired
 	private ModelService service;
 	
-	
-	// drone
 	private static final int DRONES_AMOUNT = 10;
-	private static final String[] DRONE_MODEL = {"Lightweight", "Middleweight", "Cruiserweight", "Heavyweight"};
-	private static final String[] DRONE_STATE = {"IDLE", "LOADING", "LOADED", "DELIVERING", "DELIVERED", "RETURNING"};
 	private static final int MIN_WEIGHT_LIMIT = 260;
 	private static final int MAX_WEIGHT_LIMIT = 500;
-	private static final int MIN_BATTERY_CAPACITY = 25;
-	private static final int MAX_BATTERY_CAPACITY = 100;
-	// medication
+
 	private static final String[] MEDICATION_NAMES = {"Tranquilizra", "Cardiofluxin", "Neurocalmex", 
 			"Dermaviva", "SinuRelief", "OsteoFlexidol", "PulmoEase", "DigestiCare", "OptiVisionix", 
 			"ImmunoGuardia"};
@@ -79,9 +73,8 @@ public class RandomDBCreation implements Serializable {
 
 	private void addDrons() {
 		IntStream.range(0, DRONES_AMOUNT).forEach(e -> {
-			service.addDrone(new DroneModel(0, "SEar" + 1, DRONE_MODEL[getRandomNumber(0, DRONE_MODEL.length - 1)],
-					getRandomNumber(MIN_WEIGHT_LIMIT, MAX_WEIGHT_LIMIT), getRandomNumber(MIN_BATTERY_CAPACITY, MAX_BATTERY_CAPACITY),
-					DRONE_STATE[getRandomNumber(0, DRONE_STATE.length - 1)]));
+			service.addDrone(new DroneModel(0, "SEar" + 1,
+					getRandomNumber(MIN_WEIGHT_LIMIT, MAX_WEIGHT_LIMIT)));
 		});
 		
 	}

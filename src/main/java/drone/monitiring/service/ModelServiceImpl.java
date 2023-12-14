@@ -18,6 +18,7 @@ import drone.monitiring.repo.*;
 public class ModelServiceImpl implements ModelService{
 
 	private static Logger LOG = LoggerFactory.getLogger(ModelServiceImpl.class);
+	private static final int BATATTERY_CAPACITY = 100;
 	@Autowired
 	private DroneRepository droneRepo;
 	@Autowired
@@ -27,23 +28,62 @@ public class ModelServiceImpl implements ModelService{
 	
 	@Override
 	@Transactional
-	public boolean addDrone(DroneModel dto) {
-		droneRepo.save(new Drone(dto.serialNumber, dto.model, dto.weigthLimit, 
-				dto.batteryCapacity, dto.state));
-		return true;
+	public void addDrone(DroneModel dto) {
+		
+		droneRepo.save(new Drone(dto.serialNumber, Model.getModel(dto.weightLimit), 
+				dto.weightLimit, BATATTERY_CAPACITY, State.IDLE.name()));
+	}
+	
+	@Override
+	public Drone getDrone(long id) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	@Override
 	@Transactional
-	public boolean addMedication(MedicationModel dto) {
+	public Drone updateDrone(DroneModel dto) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	@Transactional
+	public Drone removeDrone(long id) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	@Transactional
+	public void addMedication(MedicationModel dto) {
+		
 		medicationRepo.save(new Medication(dto.name, dto.weight, dto.code, dto.imageUrl));
-		return true;
+	}
+	
+	@Override
+	public Medication getMedication(long id) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	@Override
 	@Transactional
-	public boolean addDelivery(DeliveryModel dto) {
-		boolean res = true;
+	public Medication updateMedication(Medication dto) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	@Transactional
+	public Medication removeMedication(long id) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	@Transactional
+	public void addDelivery(DeliveryModel dto) {
 		Drone drone = droneRepo.findById(dto.droneId).orElse(null);
 		if(drone == null) {
 			LOG.debug("*********** drone == null");
@@ -74,7 +114,26 @@ public class ModelServiceImpl implements ModelService{
 			delivery.setMedications(deliveryItems);
 			deliveryRepo.save(delivery);
 		}
-		return res;
+	}
+
+	@Override
+	public Delivery getDelivery(long id) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	@Transactional
+	public Delivery updateDelivery(DeliveryModel dto) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	@Transactional
+	public Delivery removeDelivery(long id) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 

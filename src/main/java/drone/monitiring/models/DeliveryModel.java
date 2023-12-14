@@ -17,7 +17,6 @@ public class DeliveryModel {
 	public DeliveryModel(long id, long droneId, Map<Long, Integer> medications) {
 		super();
 		this.id = id;
-		//this.medicationsWeight = medicationsWeight;
 		this.droneId = droneId;
 		this.medications = medications;
 	} 
