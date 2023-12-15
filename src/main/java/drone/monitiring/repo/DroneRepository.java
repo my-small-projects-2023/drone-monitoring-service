@@ -13,7 +13,7 @@ public interface DroneRepository extends JpaRepository<Drone, Long>   {
 			nativeQuery = true) 
 	Drone[] findAvailableDrones(int minBetteryCapacity, String state);
 
-	@Query(value = "select * from drones where state = :state and battery_capacity >= :minBetteryCapacity and weigth_limit >= :totalWeight", 
+	@Query(value = "select * from drones where state = :state and battery_capacity >= :minBetteryCapacity and weigth_limit >= :totalWeight limit 1", 
 			nativeQuery = true) 
 	Drone getAvailableDrone(int totalWeight, int minBetteryCapacity, String state);
 

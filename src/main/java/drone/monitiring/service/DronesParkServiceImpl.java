@@ -4,6 +4,7 @@ import java.util.*;
 
 import org.slf4j.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -12,20 +13,23 @@ import drone.monitiring.models.*;
 import drone.monitiring.repo.*;
 
 @Service
-@Transactional(readOnly = true)
+@Transactional(readOnly = false)
 public class DronesParkServiceImpl implements DronesParkService {
 	
 	private static Logger LOG = LoggerFactory.getLogger(DronesParkServiceImpl.class);
 	private static final int BATATTERY_CAPACITY = 100;
 	private static final int MIN_BATTERY_CAPACITY = 25;
+	private static final int MAX_WEIGHT = 500;
+	private Queue<Map<Long, Integer>> queue = new LinkedList<>();
 	
-	//private static Map<Long, List<Medication>> loadedMedications = new HashMap<>();
 	@Autowired
 	private DroneRepository droneRepo;
 	@Autowired
 	private MedicationRepository medicationRepo;
 	@Autowired
 	private DeliveryRepository deliveryRepo;
+	@Autowired
+	private DroneImitatorService imitatorService;
 
 	@Override
 	@Transactional
@@ -54,19 +58,22 @@ public class DronesParkServiceImpl implements DronesParkService {
 		        .mapToInt(e -> medications.get(e.getId()) * e.getWeight())
 		        .sum();
 		LOG.debug("*park-service* total weight for given medications: {}", totalWeight);
+		if(totalWeight > MAX_WEIGHT) {
+			LOG.error("*park-service* weight: {} is not allowed for service, max weight is: {}", 
+					totalWeight, MAX_WEIGHT);
+			//TODO
+			// waiting list
+			return false;
+		}
 		Drone drone = droneRepo.getAvailableDrone(totalWeight, MIN_BATTERY_CAPACITY, State.IDLE.name());
 		if(drone == null) {
 			LOG.error("*park-service* there is no available drones for medication weight: {}", 
 					totalWeight);
-			//TODO
-			// waiting list
+			setToWaitingList(medications);
 			return false;
 		} 
 		drone.setState(State.LOADING.name());
-		droneRepo.save(drone);
-		//TOFIX
-		//loadedMedications.put(drone.getId(), medicationList);
-		
+		droneRepo.save(drone);	
 		
 		List<DeliveryItem> deliveryItems = new ArrayList<>();
 		Delivery delivery = deliveryRepo.save(new Delivery(totalWeight, drone, deliveryItems));
@@ -79,6 +86,7 @@ public class DronesParkServiceImpl implements DronesParkService {
 		LOG.info("*park-service* medications was loaded to drone");
 		drone.setState(State.LOADED.name());
 		droneRepo.save(drone);
+		imitatorService.changeState(drone);
 		return true;
 	}
 	
@@ -110,11 +118,37 @@ public class DronesParkServiceImpl implements DronesParkService {
 	}
 
 	@Override
+	@Transactional
 	public Medication addMedication(MedicationModel dto) {
 		Medication medication = medicationRepo
 				.save(new Medication(dto.name, dto.weight, dto.code, dto.imageUrl));
 		LOG.debug("*park-service* new medication was added: {}", medication.toString());
 		return medication;
+	}
+	
+	
+	
+//********* Waiting list service
+	
+	public void setToWaitingList(Map<Long, Integer> medications) {
+		LOG.info("*waiting-list* medications with id: {}, was added to the waiting lint", medications.keySet());
+		queue.add(medications);
+		
+	}
+
+	@Scheduled(fixedDelay = 15000)
+	public void executeFromList() {
+		if(queue.size() != 0 && !queue.isEmpty()) {
+			Map<Long, Integer> medications = queue.poll();
+			if(loadDrone(medications)) {
+				LOG.debug("*waiting-list* medications from waiting list was loaded to drone");
+			} else {
+				LOG.debug("*waiting-list* medications from waiting list was not loaded to drone");
+			}
+		} else {
+			LOG.debug("*waiting-list* waiting list is empty");
+		}
+		
 	}
 
 	
