@@ -22,9 +22,14 @@ public class DronesParkController {
 	private DronesParkService service;
 
 	@PostMapping("/drone")
-	public Drone registerNewDrone(@RequestBody @Valid DroneModel drone) {
-		LOG.info("*park-controller* request to register a new drone");
-		return service.registerDrone(drone);
+	public String registerNewDrone(@RequestBody @Valid DroneModel drone) {
+		LOG.info("*park-controller* request to register a new drone: {}", drone.toString());
+		String res = "New dron was not registered";
+		Drone newDrone = service.registerDrone(drone);
+		if(newDrone != null) {
+			res = String.format("new drone was registered: %s", newDrone.toString());
+		}
+		return res;
 	}
 	
 	@PostMapping("/drone/load")

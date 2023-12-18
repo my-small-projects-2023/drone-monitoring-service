@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import drone.monitiring.entities.*;
+import drone.monitiring.exceptions.NotFoundException;
 import drone.monitiring.models.*;
 import drone.monitiring.repo.*;
 
@@ -48,10 +49,9 @@ public class DronesParkServiceImpl implements DronesParkService {
 		List<Medication> medicationList = medicationRepo.findAllById(medications.keySet());
 		LOG.debug("*park-service* given medications amount: {}, found medications amount: {}", 
 				medications.size(), medicationList.size());
-		if(medications.size() != medications.size()) {
+		if(medications.size() != medicationList.size()) {
 			LOG.error("*park-service* some of given medications was not found");
-			//TODO
-			//throw new Exception();
+			throw new NotFoundException("Some of given medications was not found");
 		}
 		
 		int totalWeight = medicationList.stream()
@@ -61,8 +61,6 @@ public class DronesParkServiceImpl implements DronesParkService {
 		if(totalWeight > MAX_WEIGHT) {
 			LOG.error("*park-service* weight: {} is not allowed for service, max weight is: {}", 
 					totalWeight, MAX_WEIGHT);
-			//TODO
-			// waiting list
 			return false;
 		}
 		Drone drone = droneRepo.getAvailableDrone(totalWeight, MIN_BATTERY_CAPACITY, State.IDLE.name());
@@ -111,7 +109,7 @@ public class DronesParkServiceImpl implements DronesParkService {
 		Drone drone = droneRepo.findById(droneId).orElse(null);
 		if(drone == null) {
 			LOG.error("*park-service* drone with id: {} was not found", droneId);
-			return -1;
+			throw new NotFoundException(String.format("drone with id: %s does not exist", droneId));
 		}
 		LOG.debug("*park-service* found drone: {}", drone.toString());
 		return drone.getBatteryCapacity();

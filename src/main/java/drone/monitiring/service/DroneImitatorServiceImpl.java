@@ -45,6 +45,9 @@ public class DroneImitatorServiceImpl implements DroneImitatorService {
 	protected void imitateDeliveries() {
 		LOG.debug("*drone-imitatr-service* delivery imitator start");
 		long[] ids = droneRepo.findAll().stream().mapToLong(e -> (long)e.getId()).toArray();
+		if(ids.length == 0) {
+			return;
+		}
 		int random = ThreadLocalRandom.current().nextInt(0, ids.length - 1);
 		Drone drone = droneRepo.findById((long) random).orElse(null);
 		if(drone != null) {
